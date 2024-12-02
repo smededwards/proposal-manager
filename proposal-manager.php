@@ -46,3 +46,52 @@ function register_proposal_cpt() {
     register_post_type('proposal', $args);
 }
 add_action('init', 'register_proposal_cpt');
+
+/**
+ * Adds a meta box for managing proposal prices.
+ *
+ * @return void
+ */
+function add_proposal_meta_boxes() {
+    add_meta_box(
+        'proposal_prices',
+        __('Proposal Prices', 'proposal-manager'),
+        'render_proposal_prices_meta_box',
+        'proposal',
+        'normal',
+        'default'
+    );
+}
+add_action('add_meta_boxes', 'add_proposal_meta_boxes');
+
+/**
+ * Renders the meta box for managing proposal prices.
+ *
+ * @param WP_Post $post The current post object.
+ * @return void
+ */
+function render_proposal_prices_meta_box($post) {
+    $monthly_price = get_post_meta($post->ID, '_monthly_price', true);
+    $oneoff_price = get_post_meta($post->ID, '_oneoff_price', true);
+    wp_nonce_field('save_proposal_prices', 'proposal_prices_nonce');
+
+    echo render_proposal_price_field('monthly_price', __('Monthly Price (£):', 'proposal-manager'), $monthly_price);
+    echo render_proposal_price_field('oneoff_price', __('One-Off Price (£):', 'proposal-manager'), $oneoff_price);
+}
+
+/**
+ * Renders an input field for proposal prices.
+ *
+ * @param string $field_id The ID and name of the field.
+ * @param string $label The label for the field.
+ * @param mixed $value The current value of the field.
+ * @return string The HTML markup for the field.
+ */
+function render_proposal_price_field($field_id, $label, $value) {
+    return sprintf(
+        '<p><label for="%1$s">%2$s</label><input type="number" id="%1$s" name="%1$s" class="widefat" value="%3$s" step="0.01"></p>',
+        esc_attr($field_id),
+        esc_html($label),
+        esc_attr($value)
+    );
+}
