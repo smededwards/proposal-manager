@@ -95,3 +95,39 @@ function render_proposal_price_field($field_id, $label, $value) {
         esc_attr($value)
     );
 }
+
+/**
+ * Saves the meta box values for 'monthly_price' and 'oneoff_price'.
+ *
+ * @param int $post_id The ID of the current post.
+ * @return void
+ */
+function save_proposal_prices($post_id) {
+    // Verify nonce.
+    if (!isset($_POST['proposal_prices_nonce']) || !wp_verify_nonce($_POST['proposal_prices_nonce'], 'save_proposal_prices')) {
+        return;
+    }
+
+    // Prevent auto-save interference.
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    // Save meta fields with helper function.
+    save_proposal_meta_field($post_id, 'monthly_price');
+    save_proposal_meta_field($post_id, 'oneoff_price');
+}
+add_action('save_post', 'save_proposal_prices');
+
+/**
+ * Saves a meta field for the current post.
+ *
+ * @param int $post_id The ID of the current post.
+ * @param string $field_id The ID and name of the field.
+ * @return void
+ */
+function save_proposal_meta_field($post_id, $field_id) {
+    if (isset($_POST[$field_id])) {
+        update_post_meta($post_id, '_' . $field_id, sanitize_text_field($_POST[$field_id]));
+    }
+}
