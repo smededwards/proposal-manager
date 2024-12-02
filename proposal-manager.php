@@ -15,15 +15,21 @@ defined('ABSPATH') || exit; // Exit if accessed directly.
  * @return void
  */
 function register_proposal_cpt() {
+    $singular = __('Proposal', 'proposal-manager');
+    $plural   = __('Proposals', 'proposal-manager');
+
     $labels = [
-        'name'                  => __('Proposals', 'proposal-manager'),
-        'singular_name'         => __('Proposal', 'proposal-manager'),
-        'menu_name'             => __('Proposals', 'proposal-manager'),
-        'add_new_item'          => __('Add New Proposal', 'proposal-manager'),
-        'edit_item'             => __('Edit Proposal', 'proposal-manager'),
-        'all_items'             => __('All Proposals', 'proposal-manager'),
-        'view_item'             => __('View Proposal', 'proposal-manager'),
-        'search_items'          => __('Search Proposals', 'proposal-manager'),
+        'name'                  => $plural,
+        'singular_name'         => $singular,
+        'menu_name'             => $plural,
+        'add_new'               => __('Add New', 'proposal-manager'),
+        'add_new_item'          => sprintf(__('Add New %s', 'proposal-manager'), $singular),
+        'edit_item'             => sprintf(__('Edit %s', 'proposal-manager'), $singular),
+        'new_item'              => sprintf(__('New %s', 'proposal-manager'), $singular),
+        'view_item'             => sprintf(__('View %s', 'proposal-manager'), $singular),
+        'all_items'             => sprintf(__('All %s', 'proposal-manager'), $plural),
+        'view_items'            => sprintf(__('View %s', 'proposal-manager'), $plural),
+        'search_items'          => sprintf(__('Search %s', 'proposal-manager'), $plural),
     ];
 
     $args = [
