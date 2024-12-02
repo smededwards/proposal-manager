@@ -131,3 +131,26 @@ function save_proposal_meta_field($post_id, $field_id) {
         update_post_meta($post_id, '_' . $field_id, sanitize_text_field($_POST[$field_id]));
     }
 }
+
+/**
+ * Creates a new proposal post programmatically.
+ *
+ * @param string $title The title of the proposal.
+ * @param float  $monthly_price The monthly price value.
+ * @param float  $oneoff_price The one-off price value.
+ * @return int|WP_Error The post ID on success, or WP_Error on failure.
+ */
+function create_proposal($title, $monthly_price, $oneoff_price) {
+    $post_id = wp_insert_post([
+        'post_title'    => $title,
+        'post_type'     => 'proposal',
+        'post_status'   => 'publish',
+    ]);
+
+    if ($post_id && !is_wp_error($post_id)) {
+        save_proposal_meta_field($post_id, 'monthly_price');
+        save_proposal_meta_field($post_id, 'oneoff_price');
+    }
+
+    return $post_id;
+}
