@@ -154,3 +154,23 @@ function create_proposal($title, $monthly_price, $oneoff_price) {
 
     return $post_id;
 }
+
+/**
+ * Retrieves all proposals with their custom meta values.
+ *
+ * @return array An array of proposal objects, each including meta values.
+ */
+function get_proposals() {
+    $proposals = get_posts([
+        'post_type'   => 'proposal',
+        'post_status' => 'publish',
+        'numberposts' => -1,
+    ]);
+
+    foreach ($proposals as &$proposal) {
+        $proposal->monthly_price = get_post_meta($proposal->ID, '_monthly_price', true);
+        $proposal->oneoff_price = get_post_meta($proposal->ID, '_oneoff_price', true);
+    }
+
+    return $proposals;
+}
